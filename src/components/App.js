@@ -6,7 +6,9 @@ import loadingGif from "./loading.gif";
 
 function App() {
   const [pageNumber, setPageNumber] = useState(1);
+
   function getDate() {
+    // DATE TO GET REPOS
     const d = new Date();
     d.setMonth(d.getMonth() - 1);
     var creationDate = d.toISOString().split("T")[0];
@@ -16,13 +18,13 @@ function App() {
   const observer = useRef();
 
   const lastRepoRef = useCallback(
+    // WHAT TO DO WHEN LAST ITEM IS VISIBLE
     (node) => {
       if (loading) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((enteries) => {
         if (enteries[0].isIntersecting && hasMore) {
           setPageNumber((prevPageNumber) => prevPageNumber + 1);
-          console.log("visible");
         }
       });
       if (node) observer.current.observe(node);
