@@ -1,7 +1,7 @@
 # Most Starred Github Repos
 
 > This webApp uses github API to get the most starred github repos that were created in the last 30 days.
-![screenshot](./Capture.png)
+![screenshot](./Capture.PNG)
 
 ## Built With
 
