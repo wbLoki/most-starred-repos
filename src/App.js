@@ -1,14 +1,14 @@
 import React, { useState, useRef, useCallback } from "react";
-import "./App.css";
-import Card from "./Card/Card";
-import CardList from "./CardList";
-import loadingGif from "./loading.gif";
+import "./styles/App.css";
+import Card from "./components/Card";
+import CardList from "./components/CardList";
+import loadingGif from "./components/loading.gif";
 
 function App() {
   const [pageNumber, setPageNumber] = useState(1);
 
   function getDate() {
-    // DATE TO GET REPOS
+    // GET DATE TO START SORTING REPOS
     const d = new Date();
     d.setMonth(d.getMonth() - 1);
     var creationDate = d.toISOString().split("T")[0];
@@ -18,7 +18,7 @@ function App() {
   const observer = useRef();
 
   const lastRepoRef = useCallback(
-    // WHAT TO DO WHEN LAST ITEM IS VISIBLE
+    // PAGINATION WHEN LAST ITEM IS VISIBLE
     (node) => {
       if (loading) return;
       if (observer.current) observer.current.disconnect();
@@ -35,7 +35,7 @@ function App() {
 
   return (
     <div className="App App-header">
-      {repos.map((repo, key, index) => {
+      {repos.map((repo, key) => {
         if (repos.length === key + 1) {
           return (
             <div key={key} ref={lastRepoRef}>
