@@ -1,28 +1,60 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
-import Card from './Card';
-
-
-
+import React, { useState, useRef, useCallback } from "react";
+import "./App.css";
+import Card from "./Card/Card";
+import CardList from "./CardList";
+import loadingGif from "./loading.gif";
 
 function App() {
-  const [repos,setrepos] = useState([]);
-  const get_data = async ()=> {
+  const [pageNumber, setPageNumber] = useState(1);
+  function getDate() {
     const d = new Date();
-    d.setMonth(d.getMonth()-1);
-    var creationDate = d.toISOString().split('T')[0];
-    var url = `https://api.github.com/search/repositories?q=created:>${creationDate}&sort=stars&order=desc`;
-    const response = await fetch(url);  // Call API; Get data
-    const data = await response.json();
-    return setrepos(data.items);
-    }
-    useEffect( ()=>{
-      get_data();
-     },[])
+    d.setMonth(d.getMonth() - 1);
+    var creationDate = d.toISOString().split("T")[0];
+    return creationDate;
+  }
+  const { repos, loading, hasMore } = CardList(pageNumber, getDate);
+  const observer = useRef();
+
+  const lastRepoRef = useCallback(
+    (node) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((enteries) => {
+        if (enteries[0].isIntersecting && hasMore) {
+          setPageNumber((prevPageNumber) => prevPageNumber + 1);
+          console.log("visible");
+        }
+      });
+      if (node) observer.current.observe(node);
+      console.log(observer.current);
+    },
+    [loading, hasMore]
+  );
+
   return (
     <div className="App App-header">
-
-    {repos.map((repo, key) => <Card key={key} repo={repo}/>)}
+      {repos.map((repo, key, index) => {
+        if (repos.length === key + 1) {
+          return (
+            <div key={key} ref={lastRepoRef}>
+              <Card repo={repo} />
+              {loading ? (
+                <div>
+                  <img src={loadingGif} alt="loading" />
+                </div>
+              ) : (
+                <span></span>
+              )}
+            </div>
+          );
+        } else {
+          return (
+            <div key={key}>
+              <Card repo={repo} />
+            </div>
+          );
+        }
+      })}
     </div>
   );
 }
