@@ -19,7 +19,6 @@ export default function CardList(pageNumber, getDate) {
       cancelToken: new axios.CancelToken((c) => (cancel = c)),
     })
       .then((res) => {
-        console.log(repos);
         setRepos((prevRepos) => {
           return prevRepos.concat(res.data.items);
         });
