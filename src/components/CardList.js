@@ -29,7 +29,7 @@ export default function CardList(pageNumber, getDate) {
         if (axios.isCancel(e)) return;
       });
     return () => cancel();
-  }, [pageNumber]);
+  }, [pageNumber, query]);
 
   return { repos, loading, hasMore };
 }
